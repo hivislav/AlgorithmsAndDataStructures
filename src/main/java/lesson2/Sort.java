@@ -1,3 +1,7 @@
+package lesson2;
+
+import lesson2.NoteBook;
+
 public class Sort {
 
 

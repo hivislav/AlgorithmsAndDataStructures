@@ -1,3 +1,5 @@
+package lesson2;
+
 public class Main {
 
     private static String[] brandArr = {"Lenuvo", "Asos", "MacNote", "Eser", "Xamiou"};

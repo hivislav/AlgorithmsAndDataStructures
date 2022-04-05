@@ -1,3 +1,5 @@
+package lesson2;
+
 public class NoteBook {
 
     private String brand;
