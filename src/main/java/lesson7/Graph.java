@@ -12,6 +12,5 @@ public interface Graph {
 
     //Depth-first search, DFS - поиск в глубину
 
-    void dfs(String startLabel, String endLabel);
-
+    void dfs(String startLabel, int distance);
 }

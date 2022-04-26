@@ -1,5 +1,7 @@
 package lesson7;
 
+import java.util.ArrayList;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -31,12 +33,24 @@ public class Main {
 
 
         graph.display();
-        graph.dfs("Москва", "Воронеж");
-        System.out.println(GraphImpl.arrDistance.get(0));
-        System.out.println(GraphImpl.arrDistance.get(1));
-        System.out.println(GraphImpl.arrDistance.get(2));
+        graph.dfs("Москва", 0);
+        showResult(GraphImpl.arrDistance);
 
-//        GraphImpl.showResult(GraphImpl.arrDistance);
 
+        System.out.println(GraphImpl.vertexMap.toString());
+    }
+
+
+    public static void showResult(ArrayList<Integer> arrDistance) {
+        int temp;
+        int result = 1000000;
+
+        for (int i = 0; i < arrDistance.size(); i++) {
+            temp = arrDistance.get(i);
+            if (temp < result) {
+                result = temp;
+            }
+        }
+        System.out.println("Кратчайшее расстояние: " + result);
     }
 }

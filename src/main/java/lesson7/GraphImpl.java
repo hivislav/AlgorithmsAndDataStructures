@@ -1,22 +1,22 @@
 package lesson7;
 
-import java.util.ArrayList;
-import java.util.Stack;
+import java.util.*;
 
-public class GraphImpl implements Graph {
+public class GraphImpl implements Graph{
 
-    private final ArrayList<Vertex> vertexList;
+    private final List<Vertex> vertexList;
     private final int[][] adjMatrix;
     private final boolean[][] visitedMatrix;
 
-    int tempDistance = 0;
-    public static int resultDistance;
-    public static ArrayList<Integer> arrDistance = new ArrayList<Integer>();
+    static int tempDistance = 0;
+    public static ArrayList<Integer> arrDistance = new ArrayList<>();
+    public static HashMap vertexMap = new HashMap<>();
 
     public GraphImpl(int maxVertexCount) {
         this.vertexList = new ArrayList<>(maxVertexCount);
         this.adjMatrix = new int[maxVertexCount][maxVertexCount];
         this.visitedMatrix = new boolean[maxVertexCount][maxVertexCount];
+
     }
 
     @Override
@@ -57,6 +57,7 @@ public class GraphImpl implements Graph {
         System.out.println(this);
     }
 
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -74,86 +75,56 @@ public class GraphImpl implements Graph {
     }
 
     @Override
-    public void dfs(String startLabel, String endLabel) {
+    public void dfs(String startLabel, int distance) {
         int startIndex = indexOf(startLabel);
-        int endIndex = indexOf(endLabel);
 
         if (startIndex == -1) {
             throw new IllegalArgumentException("Неверная вершина " + startLabel);
         }
 
         Stack<Vertex> stack = new Stack<>();
-        Vertex startVertex = vertexList.get(startIndex);
-        Vertex endVertex = vertexList.get(endIndex);
+        Vertex vertex = vertexList.get(startIndex);
 
-        visitVertex(stack, startVertex);
-
+        visitVertex(stack, vertex);
         while (!stack.isEmpty()) {
-            saveDistance(stack.peek(), endVertex);
+            vertex = getNearUnvisitedVertex(stack.peek());
 
-            if (endVertex.isVisited()) {
-                startVertex.setVisited(false);
-                dfs(startLabel, endLabel);
-                break;
-            }
-                startVertex = getNearUnvisitedVertex(stack.peek());
-            if (startVertex == null) {
+
+            if (vertex == null) {
                 stack.pop();
             } else {
-                endVertex.setVisited(false);
-                visitVertex(stack, startVertex);
+                visitVertex(stack, vertex);
             }
         }
     }
-
-    private void saveDistance(Vertex startVertex, Vertex endVertex) {
-        int currentIndex = vertexList.indexOf(startVertex);
-        int endIndex = vertexList.indexOf(endVertex);
-
-        for (int i = 0; i <getSize(); i++) {
-
-            if (!visitedMatrix[currentIndex][i]) {
-            tempDistance += adjMatrix[currentIndex][i];
-            }
-            if (endVertex.isVisited()) {
-                resultDistance = tempDistance;
-                tempDistance = 0;
-                arrDistance.add(resultDistance);
-                return;
-            }
-        }
-    }
-
-//    public static void showResult(ArrayList<Integer> arrDistance) {
-//        int temp;
-//        int result = 0;
-//        for (int i = 0; i < arrDistance.size(); i++) {
-//            temp = arrDistance.get(i);
-//            if (temp < result) {
-//                result = temp;
-//            }
-//        }
-//
-//        System.out.println("Самый короткий маршрут " + result);
-//    }
 
     private Vertex getNearUnvisitedVertex(Vertex vertex) {
         int currentIndex = vertexList.indexOf(vertex);
 
+
+
         for (int i = 0; i < getSize(); i++) {
             if (adjMatrix[currentIndex][i] > 0 && !visitedMatrix[currentIndex][i]) {
 
+                System.out.println(vertex.getLabel() + " ==> " + adjMatrix[currentIndex][i] + " км. ");
+
+                tempDistance += adjMatrix[currentIndex][i];
                 visitedMatrix[currentIndex][i] = true;
-                System.out.print(adjMatrix[currentIndex][i] + " км. ");
-                return vertexList.get(i);
+                vertexMap.put(vertexList.get(i).getLabel(), tempDistance);
+                dfs(vertexList.get(i).getLabel(), tempDistance);
             }
         }
+
+        if (tempDistance != 0) {
+            arrDistance.add(tempDistance);
+            System.out.println("Суммарное расстояние: " + tempDistance);
+        }
+        tempDistance = 0;
         return null;
     }
 
-    private void visitVertex(Stack<Vertex> stack, Vertex startVertex) {
-        System.out.println(startVertex.getLabel() + " ");
-        stack.push(startVertex);
-        startVertex.setVisited(true);
+    private void visitVertex(Stack<Vertex> stack, Vertex vertex) {
+        stack.push(vertex);
+        vertex.setVisited(true);
     }
 }

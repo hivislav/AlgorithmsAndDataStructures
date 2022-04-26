@@ -8,6 +8,7 @@ public class Vertex {
 
     public Vertex(String label) {
         this.label = label;
+        this.isVisited = false;
     }
 
     public void setVisited(boolean visited) {
